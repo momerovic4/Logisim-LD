@@ -1,0 +1,66 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity mux2to1 is --Kreiramo 2to1Mux koji koristimo
+	PORT (  D0 : in STD_LOGIC; --Ulaz
+    	    D1 : in STD_LOGIC; --Ulaz
+            S  : in STD_LOGIC; --Ulaz
+            R  : out STD_LOGIC); --Izlaz
+end mux2to1;
+
+architecture Behavioral of mux2to1 is
+begin
+	R <= D0 when (S = '0') else
+         D1 ;
+end Behavioral;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity BarrelShifter8bit is
+	PORT ( D : in STD_LOGIC_VECTOR(7 downto 0); --Ulaz
+    	   S : in STD_LOGIC_VECTOR(2 downto 0); --Ulaz
+    	   Q : out STD_LOGIC_VECTOR(7 downto 0)); --Izlaz
+end BarrelShifter8bit;
+
+architecture Behavioral of BarrelShifter8bit is
+
+component mux2to1
+	PORT (  D0 : in STD_LOGIC; --Ulaz
+    	    D1 : in STD_LOGIC; --Ulaz
+            S  : in STD_LOGIC; --Ulaz
+            R  : out STD_LOGIC); --Izlaz
+end component;
+
+SIGNAL r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15: STD_LOGIC; --Pomocni Signali
+
+begin
+	--Ukoliko je Upravljacki signal S0 upaljen
+	mux00: mux2to1 port map (D(0),D(7),S(0),r0);
+    mux01: mux2to1 port map (D(1),D(0),S(0),r1);
+    mux02: mux2to1 port map (D(2),D(1),S(0),r2);
+    mux03: mux2to1 port map (D(3),D(2),S(0),r3);
+    mux04: mux2to1 port map (D(4),D(3),S(0),r4);
+    mux05: mux2to1 port map (D(5),D(4),S(0),r5);
+    mux06: mux2to1 port map (D(6),D(5),S(0),r6);
+    mux07: mux2to1 port map (D(7),D(6),S(0),r7);
+	--Ukoliko je Upravljacki signal S1 upaljen
+	mux10: mux2to1 port map (r0,r6,S(1),r8);
+    mux11: mux2to1 port map (r1,r7,S(1),r9);
+    mux12: mux2to1 port map (r2,r0,S(1),r10);
+    mux13: mux2to1 port map (r3,r1,S(1),r11);
+    mux14: mux2to1 port map (r4,r2,S(1),r12);
+    mux15: mux2to1 port map (r5,r3,S(1),r13);
+    mux16: mux2to1 port map (r6,r4,S(1),r14);
+    mux17: mux2to1 port map (r7,r5,S(1),r15);
+	--Ukoliko je Upravljacki signal S2 upaljen
+    mux20: mux2to1 port map (r8,r12,S(2),Q(0));
+    mux21: mux2to1 port map (r9,r13,S(2),Q(1));
+    mux22: mux2to1 port map (r10,r14,S(2),Q(2));
+    mux23: mux2to1 port map (r11,r15,S(2),Q(3));
+    mux24: mux2to1 port map (r12,r8,S(2),Q(4));
+    mux25: mux2to1 port map (r13,r9,S(2),Q(5));
+    mux26: mux2to1 port map (r14,r10,S(2),Q(6));
+    mux27: mux2to1 port map (r15,r11,S(1),Q(7));
+
+end Behavioral;

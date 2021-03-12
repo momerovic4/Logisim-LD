@@ -1,0 +1,48 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ENTITY tb_comparator IS
+END tb_comparator;
+ARCHITECTURE behavior OF tb_comparator IS 
+
+    COMPONENT comparator
+    PORT(
+         clock : IN  std_logic; --Ulaz
+         A : IN  std_logic_vector(7 downto 0);--Ulaz
+         B : IN  std_logic_vector(7 downto 0);--Ulaz
+         IAB : IN  std_logic;--Ulaz
+         Output : OUT  std_logic -- Izlaz = 0 kad A = B
+        );
+    END COMPONENT;
+
+   signal clock : std_logic := '0';-- pomocni signali
+   signal A : std_logic_vector(7 downto 0) := (others => '0');-- pomocni signali
+   signal B : std_logic_vector(7 downto 0) := (others => '0');-- pomocni signali
+   signal IAB : std_logic := '0';-- pomocni signali
+
+   signal Output : std_logic;-- pomocni signali
+   constant clock_period : time := 10 ns;
+ BEGIN
+   uut: comparator PORT MAP (
+          clock => clock,
+          A => A,
+          B => B,
+          IAB => IAB,
+          Output => Output
+        );
+   clock_process :process
+   begin
+ clock <= '0';
+ wait for clock_period/2;
+ clock <= '1';
+ wait for clock_period/2;
+   end process;
+   stim_proc: process
+   begin 
+      wait for 100 ns; 
+ A <= x"AA";
+ B <= x"BB";
+      wait for clock_period*10;
+ B <= x"AA"; 
+      wait;
+   end process;
+END;

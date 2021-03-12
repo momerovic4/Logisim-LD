@@ -1,0 +1,59 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.all;
+USE ieee.numeric_std.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE behavior OF testbench IS 
+
+	COMPONENT Adder4bit
+	PORT(
+		a : IN std_logic_vector(3 downto 0); --Ulaz
+		b : IN std_logic_vector(3 downto 0); --Ulaz         
+		s : OUT std_logic_vector(3 downto 0);--Izlaz
+		cout : OUT std_logic				 --Izlaz
+		);
+	END COMPONENT;
+
+	--Ulazi
+	SIGNAL a :  std_logic_vector(3 downto 0) := (others=>'0');
+	SIGNAL b :  std_logic_vector(3 downto 0) := (others=>'0');
+
+	--Izlazi
+	SIGNAL s :  std_logic_vector(3 downto 0);
+	SIGNAL cout :  std_logic;
+
+BEGIN
+
+	DUT: Adder4bit PORT MAP(
+		a => a,
+		b => b,
+		s => s,
+		cout => cout
+	);
+
+	PROCESS
+	BEGIN
+    	--Sabiranje bez prenosa
+		a <= "0000";
+		b <= "0001";
+       	wait for 10 ns;
+        assert ( s = "0001" )report "Failed Case 1 - S" severity error;
+		--Sabiranje sa prenosom
+		a <= "0010";
+		b <= "0010";
+        wait for 10 ns;
+        assert ( s = "0100" )report "Failed Case 1 - S" severity error;
+		--Sabiranje bez prenosa
+		a <= "0100";
+		b <= "1011";
+        wait for 10 ns;
+        assert ( s = "1111" )report "Failed Case 1 - S" severity error;
+		wait for 1 ns;
+
+		wait; 
+	END PROCESS;
+
+END;
